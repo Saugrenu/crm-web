@@ -45,6 +45,10 @@ export default function App() {
   const [message, setMessage] = useState('')
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [isTasksPage, setIsTasksPage] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [authLoading, setAuthLoading] = useState(false)
+  const [authMessage, setAuthMessage] = useState('')
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -142,7 +146,22 @@ export default function App() {
 
     await loadCompanies()
   }
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault()
+  setAuthLoading(true)
+  setAuthMessage('')
 
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  setAuthLoading(false)
+
+  if (error) {
+    setAuthMessage('Не удалось войти. Проверьте email и пароль.')
+  }
+}
   const visibleCompanies = companies.filter((company) =>
     [company.name, company.industry, company.status]
       .filter(Boolean)
@@ -156,16 +175,51 @@ export default function App() {
   }
 
   if (!user) {
-    return (
-      <main className="mx-auto mt-24 max-w-md rounded-xl bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-bold">Сессия закончилась</h1>
-        <p className="mt-3 text-slate-600">
-          Обновите страницу и войдите снова.
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+      <form
+        onSubmit={handleLogin}
+        className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm"
+      >
+        <h1 className="text-2xl font-bold text-slate-900">
+          CRM агентства
+        </h1>
+        <p className="mt-2 text-slate-600">
+          Войдите в рабочий аккаунт.
         </p>
-      </main>
-    )
-  }
 
+        <label className="mt-6 block text-sm font-medium">Email</label>
+        <input
+          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+
+        <label className="mt-4 block text-sm font-medium">Пароль</label>
+        <input
+          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          required
+        />
+
+        {authMessage && (
+          <p className="mt-4 text-sm text-red-700">{authMessage}</p>
+        )}
+
+        <button
+          className="mt-6 w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white disabled:opacity-60"
+          disabled={authLoading}
+        >
+          {authLoading ? 'Вход…' : 'Войти'}
+        </button>
+      </form>
+    </main>
+  )
+}
   if (isTasksPage) {
   return <TasksPage onBack={() => setIsTasksPage(false)} />
 }
