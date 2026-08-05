@@ -182,7 +182,7 @@ export default function App() {
         className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm"
       >
         <h1 className="text-2xl font-bold text-slate-900">
-          CRM агентства
+          Client Desk CRM
         </h1>
         <p className="mt-2 text-slate-600">
           Войдите в рабочий аккаунт.
@@ -237,7 +237,7 @@ export default function App() {
       <div className="mx-auto max-w-6xl">
         <header className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">CRM агентства</h1>
+            <h1 className="text-3xl font-bold text-slate-900">Client Desk CRM</h1>
             <p className="mt-1 text-slate-600">{user.email}</p>
           </div>
           <button
