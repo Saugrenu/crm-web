@@ -4,6 +4,7 @@ import type { User } from '@supabase/supabase-js'
 import { supabase } from './lib/supabase'
 import CompanyContacts from './CompanyContacts'
 import TasksPage from './TasksPage'
+import ImportCompanies from './ImportCompanies'
 
 type Company = {
   id: string
@@ -45,6 +46,7 @@ export default function App() {
   const [message, setMessage] = useState('')
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [isTasksPage, setIsTasksPage] = useState(false)
+  const [isImportOpen, setIsImportOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [authLoading, setAuthLoading] = useState(false)
@@ -262,12 +264,20 @@ export default function App() {
                 Всего: {companies.length}
               </p>
             </div>
-            <button
-              className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white"
-              onClick={openNewCompany}
-            >
-              + Добавить компанию
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <button
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium"
+                onClick={() => setIsImportOpen(true)}
+              >
+                Импорт
+              </button>
+              <button
+                className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white"
+                onClick={openNewCompany}
+              >
+                + Добавить компанию
+              </button>
+            </div>
           </div>
 
           <input
@@ -353,6 +363,13 @@ export default function App() {
             </div>
           )}
         </section>
+
+        {isImportOpen && (
+          <ImportCompanies
+            onClose={() => setIsImportOpen(false)}
+            onImported={loadCompanies}
+          />
+        )}
 
         {isFormOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
